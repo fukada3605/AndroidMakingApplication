@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">パスワード生成機</string>
+    <string name="addNumList_label">数字を含む?</string>
+    <string name="addBigList_label">アルファベットの大文字を含む?</string>
+    <string name="textLength_label">文字数</string>
+    <string name="generatePass_label">パスワードを生成</string>
+    <string name="resultView_label">「%s」です。</string>
+    <string name="resulttext_label">生成されたパスワードは</string>
+    <string name="CopyButton_label">クリップボードにコピー</string>
+    <string name="addSymbol">記号を含めますか？</string>
+</resources>

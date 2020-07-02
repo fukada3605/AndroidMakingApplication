@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="textLength_label">word length</string>
+    <string name="app_name">Password generator</string>
+    <string name="addNumList_label">Contains numbers?</string>
+    <string name="addBigList_label">Contains uppercase letters?</string>
+    <string name="generatePass_label">Generate password</string>
+    <string name="resultView_label">\"%s\".</string>
+    <string name="resulttext_label">The generated password is</string>
+    <string name="CopyButton_label">Copy to clipboard</string>
+    <string name="addSymbol">Contains Symbol?</string>
+</resources>
