@@ -56,6 +56,7 @@ fun createPASS(
         passPath += tmp
         passtmp += tmp[Random.nextInt(tmp.length)].toString()
     }
+
     if(shouldsetSymbol){
         val tmp = "!_><+*;:/-^|=?(){}[]"
         passPath += tmp
