@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -18,11 +17,11 @@ import java.util.*
 
 internal class MainActivity : Activity() {
 
-    private var caninitimgarray: Boolean=true
-    private var imgs : ArrayList<Bitmap> = arrayListOf()
+    var canInitImgArray1: Boolean=true
+    var imgList1 : ArrayList<Bitmap?> = arrayListOf()
     var outputImg:Bitmap?=null
 
-    var resultimgview: ImageView? = null
+    var resultImgView: ImageView? = null
 
     private val REQUEST_GALLERY = 0
     /** Called when the activity is first created.  */
@@ -31,23 +30,23 @@ internal class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        resultimgview = findViewById<View>(R.id.resultImgView) as ImageView
+        resultImgView = findViewById<View>(R.id.resultImgView) as ImageView
 
-        val selectimgbtn=findViewById<Button>(R.id.selectimg)
-        val synthesisimgbtn=findViewById<Button>(R.id.synthesisimg)
+        val selectImgBtn=findViewById<Button>(R.id.selectimg)
+        val synthesisImgBtn=findViewById<Button>(R.id.synthesisimg)
         val resetBtn =findViewById<Button>(R.id.resetBtn)
-        val imgoutBtn=findViewById<Button>(R.id.imgoutputBtn)
-        val editfilename=findViewById<EditText>(R.id.EditFileText)
+        val imgOutputBtn=findViewById<Button>(R.id.imgoutputBtn)
+        val editName=findViewById<EditText>(R.id.EditFileText)
 
-        val Endwithstr= arrayListOf<String>("jpg", "png")
-        var Endwith:String="jpg"
+        val endwithstr= arrayListOf("jpg", "png")
+        var endWith="jpg"
 
-        val spinner = findViewById<Spinner>(R.id.Endwith);
+        val spinner = findViewById<Spinner>(R.id.Endwith)
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item, Endwithstr
+            android.R.layout.simple_spinner_item, endwithstr
         )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter=adapter
 
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
@@ -58,7 +57,7 @@ internal class MainActivity : Activity() {
             ) {
                 val spinner = parent as Spinner
                 val item = spinner.selectedItem as String
-                Endwith=item
+                endWith=item
             }
 
             //　アイテムが選択されなかった
@@ -67,53 +66,52 @@ internal class MainActivity : Activity() {
             }
         }
         // ギャラリー呼び出し
-        selectimgbtn.setOnClickListener {
+        selectImgBtn.setOnClickListener {
                 val intent = Intent()
                 intent.action = Intent.ACTION_GET_CONTENT
                 intent.type = "image/*"
                 intent.addCategory(Intent.CATEGORY_OPENABLE)
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-
-                startActivityForResult(Intent.createChooser(intent,"画像を選択"), REQUEST_GALLERY)
+                startActivityForResult(Intent.createChooser(intent, "画像を選択"), REQUEST_GALLERY)
         }
 
-        synthesisimgbtn.setOnClickListener {
-            if (imgs==null){
+        synthesisImgBtn.setOnClickListener {
+            if (imgList1.isEmpty()){
                 onMessage("画像を選択してください")
                 return@setOnClickListener
             }
             //合成画像作成
             val imgSynthesizer = ImgSynthesizer(this)
             imgSynthesizer.setListean(createListener())
-            imgSynthesizer.execute(imgs)
+            imgSynthesizer.execute(imgList1)
         }
 
         resetBtn.setOnClickListener {
-            imgs = arrayListOf()
+            imgList1 = arrayListOf()
             outputImg=null
-            resultimgview?.setImageBitmap(null)
+            resultImgView?.setImageBitmap(null)
         }
 
-        imgoutBtn.setOnClickListener {
+        imgOutputBtn.setOnClickListener {
             if (outputImg==null){
                 onMessage("画像を合成してください")
                 return@setOnClickListener
             }
 
-            val filename=editfilename.text.toString()
+            val filename=editName.text.toString()
             if (filename.isEmpty()) {
-                editfilename.error="ファイル名を入力してください。"
+                editName.error="ファイル名を入力してください。"
                 return@setOnClickListener
             }
 
             try {
                 val fos = FileOutputStream(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        .path + "/"+filename+"."+Endwith, false
+                        .path + "/"+filename+"."+endWith, false
                 )
-                if (Endwith=="jpg"){
+                if (endWith=="jpg"){
                     outputImg?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                }else if (Endwith=="png"){
+                }else if (endWith=="png"){
                     outputImg?.compress(Bitmap.CompressFormat.PNG, 100, fos)
                 }
                 fos.flush()
@@ -136,15 +134,24 @@ internal class MainActivity : Activity() {
                 }
                 if (outputimg!=null){
                     outputImg=outputimg
-                    resultimgview?.setImageBitmap(outputimg)
+                    resultImgView?.setImageBitmap(outputimg)
                 }
             }
         }
     }
 
+    private fun createListener2(): Listener2 {
+        return object : Listener2() {
+            override fun onSuccess(canInitImgArray: Boolean, imgList: ArrayList<Bitmap?>) {
+                canInitImgArray1=canInitImgArray
+                imgList1=imgList
+                onMessage("画像を選択しました。")
+                Log.d("画像数",imgList1.size.toString())
+            }
+        }
+    }
 
-
-    fun onMessage(msg:String){
+    private fun onMessage(msg:String){
         val context = applicationContext
         val t = Toast.makeText(
             context,
@@ -173,11 +180,6 @@ internal class MainActivity : Activity() {
         Log.d("処理確認","停止")
         super.onStop()
     }
-    private class ActivityResult(
-        val requestCode: Int,
-        val resultCode: Int,
-        val data: Intent
-    )
 
     /*fun addmeter(atai:Int,Max:Int){
         progress_bar.progress=Max
@@ -191,19 +193,26 @@ internal class MainActivity : Activity() {
         animation.start()
     }*/
 
+    private class ActivityResult(
+        val requestCode: Int,
+        val resultCode: Int,
+        val data: Intent
+    )
+
     private var activityResult: ActivityResult? = null
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
         data: Intent
     ) {
+        Log.d("実行","onActivityResult")
         super.onActivityResult(requestCode, resultCode, data)
         activityResult = ActivityResult(requestCode, resultCode, data)
     }
 
     override fun onPostResume() {
+        Log.d("実行","onPostResume")
         super.onPostResume()
-
         if (activityResult != null) {
             onPostResumeWithActivityResult(
                 activityResult!!.requestCode,
@@ -214,55 +223,24 @@ internal class MainActivity : Activity() {
         }
     }
 
-    protected fun onPostResumeWithActivityResult(
+
+    private fun onPostResumeWithActivityResult(
         requestCode: Int,
         resultCode: Int,
         data: Intent?
     ) {
-        // override if necessary
-        if (requestCode == REQUEST_GALLERY && resultCode == RESULT_OK) {
-            try {
-                if (data!=null) {
-                    if (data.data != null) {
-                        val `in` =
-                            contentResolver.openInputStream(data.data!!)
-                        val img = BitmapFactory.decodeStream(`in`)
-                        `in`!!.close()
-                        val img2: Bitmap = Bitmap.createBitmap(img)
-
-                        //画像配列への追加作業
-                        if (caninitimgarray) {
-                            imgs = arrayListOf(img2)
-                            caninitimgarray = false
-                        } else {
-                            imgs.add(img2)
-                        }
-                    } else {
-                        val clipdata = data.clipData
-                        if (clipdata != null) {
-                            for (i in 0 until clipdata.itemCount) {
-                                val `in` =
-                                    contentResolver.openInputStream(clipdata.getItemAt(i).uri)
-                                val img = BitmapFactory.decodeStream(`in`)
-                                `in`!!.close()
-                                val img2: Bitmap = Bitmap.createBitmap(img)
-                                if (caninitimgarray) {
-                                    imgs = arrayListOf(img2)
-                                    caninitimgarray = false
-                                } else {
-                                    imgs.add(img2)
-                                }
-                            }
-                        }
-                    }
-                    onMessage("画像を選択しました。")
-                    Log.d("画像数",imgs.size.toString())
-                }
-            } catch (e: Exception) {
-            }
+        Log.d("実行","onPostResumeWithActivityResult")
+        if(requestCode == REQUEST_GALLERY && resultCode == RESULT_OK) {
+                val imgLoader = ImgLoader(this)
+                imgLoader.setcanInitImgArray(canInitImgArray1)
+                imgLoader.setImgList(imgList1)
+                imgLoader.setListean(createListener2())
+                imgLoader.execute(data)
+            Log.d("クリア","了解")
         }
     }
 
+    /*
     private fun rgbToGray(srcImg : Bitmap) : Bitmap {
         // 出力画像用の配列
         var dstImg : Bitmap = Bitmap.createBitmap(srcImg.width, srcImg.height, Bitmap.Config.ARGB_8888)
@@ -286,5 +264,5 @@ internal class MainActivity : Activity() {
 
         return dstImg
     }
-
+    */
 }
