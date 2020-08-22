@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:text="出力ファイル名"
+        android:text="@string/fileNameLabel"
         app:layout_constraintBaseline_toBaselineOf="@+id/EditFileText"
         app:layout_constraintEnd_toStartOf="@+id/EditFileText"
         app:layout_constraintStart_toStartOf="parent" />
@@ -63,7 +63,8 @@
         android:ems="7"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/synthesisimg"
-        app:layout_constraintStart_toEndOf="@+id/textView" />
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        android:importantForAutofill="no" />
 
     <Spinner
         android:id="@+id/Endwith"
@@ -79,7 +80,7 @@
         android:id="@+id/resetBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="リセット"
+        android:text="@string/resetBtnLabel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/synthesisimg"
         app:layout_constraintStart_toStartOf="parent" />

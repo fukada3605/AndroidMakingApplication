@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">ImageExtraction</string>
+    <string name="app_name">画像合成アプリ</string>
+    <string name="fileNameLabel">出力ファイル名</string>
+    <string name="resetBtnLabel">リセット</string>
 </resources>

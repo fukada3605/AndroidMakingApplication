@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "name.tf_maker.android.sample.imageextraction"
+        applicationId "name.tf_maker.android.sample.imageSynthesizer"
         minSdkVersion 18
         targetSdkVersion 30
         versionCode 1
